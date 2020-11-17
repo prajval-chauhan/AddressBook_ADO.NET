@@ -14,5 +14,16 @@ namespace AddressBookADO.NET
         public int zip { get; set; }
         public double phoneNo { get; set; }
         public string email { get; set; }
+        public ContactModel(string fn, string ln, string add, string city, string state, int zip, double phoneNo, string email)
+        {
+            this.firstName = fn;
+            this.lastName = ln;
+            this.address = add;
+            this.city = city;
+            this.state = state;
+            this.zip = zip;
+            this.phoneNo = phoneNo;
+            this.email = email;
+        }
     }
 }

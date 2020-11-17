@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -34,7 +35,7 @@ namespace AddressBookADO.NET
             }
         }
         /// <summary>
-        /// Creates the address book table.
+        /// UC2: Creates the address book table.
         /// </summary>
         /// <exception cref="Exception"></exception>
         public void CreateAddressBookTable()
@@ -61,6 +62,41 @@ namespace AddressBookADO.NET
                 }
             }
         catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        /// <summary>
+        /// UC3: Adds the contact into the address book table 
+        /// </summary>
+        /// <param name="contact">The contact.</param>
+        /// <exception cref="Exception"></exception>
+        public void AddContact(ContactModel contact)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spAddContacts", this.connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@firstName", contact.firstName );
+                    cmd.Parameters.AddWithValue("@lastName", contact.lastName);
+                    cmd.Parameters.AddWithValue("@address", contact.address);
+                    cmd.Parameters.AddWithValue("@city", contact.city);
+                    cmd.Parameters.AddWithValue("@state", contact.state);
+                    cmd.Parameters.AddWithValue("@zip", contact.zip);
+                    cmd.Parameters.AddWithValue("@phoneNo", contact.phoneNo);
+                    cmd.Parameters.AddWithValue("@email", contact.email);
+                    this.connection.Open();
+                    cmd.ExecuteNonQuery();
+                    this.connection.Close();
+                }
+            }
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
