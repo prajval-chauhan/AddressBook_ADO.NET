@@ -8,7 +8,8 @@ namespace AddressBookADO.NET
         {
             Console.WriteLine("Welcome to the Address Book Program");
             AddressBook call = new AddressBook();
-            call.CheckConnection();
+            //call.CheckConnection();
+            call.CreateAddressBookTable();
         }
     }
 }
