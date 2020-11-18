@@ -18,14 +18,14 @@ namespace AddressBookADO.NET
         {
             try
             {
-                using(this.connection)
+                using (this.connection)
                 {
                     this.connection.Open();
                     this.connection.Close();
                     Console.WriteLine("connection O.K.");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -51,7 +51,7 @@ namespace AddressBookADO.NET
                     cmd.CommandType = System.Data.CommandType.Text;
                     var result = cmd.ExecuteNonQuery();
                     this.connection.Close();
-                    if(result != 0)
+                    if (result != 0)
                     {
                         Console.WriteLine("success");
                     }
@@ -61,7 +61,7 @@ namespace AddressBookADO.NET
                     }
                 }
             }
-        catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -83,7 +83,7 @@ namespace AddressBookADO.NET
                 {
                     SqlCommand cmd = new SqlCommand("spAddContacts", this.connection);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@firstName", contact.firstName );
+                    cmd.Parameters.AddWithValue("@firstName", contact.firstName);
                     cmd.Parameters.AddWithValue("@lastName", contact.lastName);
                     cmd.Parameters.AddWithValue("@address", contact.address);
                     cmd.Parameters.AddWithValue("@city", contact.city);
@@ -105,5 +105,71 @@ namespace AddressBookADO.NET
                 this.connection.Close();
             }
         }
+        /// <summary>
+        /// UC4: Edits the contact usign the first name 
+        /// </summary>
+        /// <param name="contact">The contact.</param>
+        /// <exception cref="Exception"></exception>
+        public void EditContactUsingFirstName(ContactModel contact, string contactToBeEdited)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spEditContacts", this.connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@contactToBeEdited", contactToBeEdited);
+                    cmd.Parameters.AddWithValue("@firstName", contact.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", contact.lastName);
+                    cmd.Parameters.AddWithValue("@address", contact.address);
+                    cmd.Parameters.AddWithValue("@city", contact.city);
+                    cmd.Parameters.AddWithValue("@state", contact.state);
+                    cmd.Parameters.AddWithValue("@zip", contact.zip);
+                    cmd.Parameters.AddWithValue("@phoneNo", contact.phoneNo);
+                    cmd.Parameters.AddWithValue("@email", contact.email);
+                    this.connection.Open();
+                    cmd.ExecuteNonQuery();
+                    this.connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        /// <summary>
+        /// UC5: Deletes the contact using first name and last name 
+        /// </summary>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <exception cref="Exception"></exception>
+        //public void DeleteContact(string firstName, string lastName)
+        //{
+        //    try
+        //    {
+        //        using(this.connection)
+        //        {
+        //            SqlCommand cmd = new SqlCommand("spDeleteContact", this.connection);
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("firstNameOfTheContactToBeDeleted", firstName);
+        //            cmd.Parameters.AddWithValue("lastNameOfTheContactToBeDeleted", lastName);
+        //            this.connection.Open();
+        //            cmd.ExecuteNonQuery();
+        //            this.connection.Close();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception(e.Message);
+        //    }
+        //    finally
+        //    {
+        //        this.connection.Close();
+        //    }
+        //}
     }
 }
