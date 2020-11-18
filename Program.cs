@@ -13,6 +13,8 @@ namespace AddressBookADO.NET
             //call.CreateAddressBookTable();
             //call.EditContactUsingFirstName(contact, "p");
             //call.DeleteContact("Edited", "Chauhan");
+            //call.DisplayContacts();
+            call.FindingContactsByCityOrByState("Saharanpur");
         }
     }
 }

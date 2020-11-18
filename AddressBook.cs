@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace AddressBookADO.NET
 {
@@ -10,6 +8,7 @@ namespace AddressBookADO.NET
     {
         public static string connectionString = @"Server=DESKTOP-C457C73\SQLEXPRESS; Database=AddressBook_ADO.NET; User Id=prajval;Password=gonfreecs";
         SqlConnection connection = new SqlConnection(connectionString);
+        ContactModel contacts = new ContactModel();
         /// <summary>
         /// UC1: Connecting to the already existing databse  
         /// </summary>
@@ -23,6 +22,52 @@ namespace AddressBookADO.NET
                     this.connection.Open();
                     this.connection.Close();
                     Console.WriteLine("connection O.K.");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        /// <summary>
+        /// Displays the contacts.
+        /// </summary>
+        public void DisplayContacts()
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    string query = @"SELECT * FROM addressBook;";
+                    SqlCommand cmd = new SqlCommand(query, this.connection);
+                    this.connection.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            contacts.firstName = dr.GetString(0);
+                            contacts.lastName = dr.GetString(1);
+                            contacts.address = dr.GetString(2);
+                            contacts.city = dr.GetString(3);
+                            contacts.state = dr.GetString(4);
+                            contacts.zip = dr.GetInt32(5);
+                            contacts.phoneNo = dr.GetInt64(6);
+                            contacts.email = dr.GetString(7);
+                            Console.WriteLine("***********************************************************");
+                            Console.WriteLine("firstName: {0},\nlastName: {1},\naddress: {2},\ncity: {3},\nstate: {4},\nzip: {5},\nphoneNo: {6},\nemail: {7}",
+                                contacts.firstName, contacts.lastName, contacts.address, contacts.city, contacts.state, contacts.zip, contacts.phoneNo, contacts.email);
+                            Console.WriteLine("***********************************************************");
+                        }
+                    }
+                    else
+                        Console.WriteLine("No data found");
+                    dr.Close();
+                    this.connection.Close();
                 }
             }
             catch (Exception e)
@@ -155,14 +200,60 @@ namespace AddressBookADO.NET
                 {
                     SqlCommand cmd = new SqlCommand("spDeleteContact", this.connection);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("firstNameOfTheContactToBeDeleted", firstName);
-                    cmd.Parameters.AddWithValue("lastNameOfTheContactToBeDeleted", lastName);
+                    cmd.Parameters.AddWithValue("@firstNameOfTheContactToBeDeleted", firstName);
+                    cmd.Parameters.AddWithValue("@lastNameOfTheContactToBeDeleted", lastName);
                     this.connection.Open();
                     cmd.ExecuteNonQuery();
                     this.connection.Close();
                 }
             }
             catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        /// <summary>
+        /// Findings the contacts by city or by state
+        /// </summary>
+        /// <param name="cityOrStateName">Name of the city or state.</param>
+        /// <exception cref="Exception"></exception>
+        public void FindingContactsByCityOrByState(string cityOrStateName)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spFindByCityOrByState", this.connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@cityOrState", cityOrStateName);
+                    this.connection.Open();
+                    cmd.ExecuteNonQuery();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if(dr.HasRows)
+                    {
+                        while(dr.Read())
+                        {
+                            contacts.firstName = dr.GetString(0);
+                            contacts.lastName = dr.GetString(1);
+                            contacts.city = dr.GetString(2);
+                            contacts.state = dr.GetString(3);
+                            Console.WriteLine("***********************************************************");
+                            Console.WriteLine("firstName: {0},\nlastName: {1},\ncity: {2},\nstate: {3}",
+                                contacts.firstName, contacts.lastName, contacts.city, contacts.state);
+                            Console.WriteLine("***********************************************************");
+                        }
+                    }
+                    else
+                        Console.WriteLine("No data found");
+                    dr.Close();
+                    this.connection.Close();
+                }
+            }
+            catch(Exception e)
             {
                 throw new Exception(e.Message);
             }
