@@ -147,29 +147,29 @@ namespace AddressBookADO.NET
         /// <param name="firstName">The first name.</param>
         /// <param name="lastName">The last name.</param>
         /// <exception cref="Exception"></exception>
-        //public void DeleteContact(string firstName, string lastName)
-        //{
-        //    try
-        //    {
-        //        using(this.connection)
-        //        {
-        //            SqlCommand cmd = new SqlCommand("spDeleteContact", this.connection);
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("firstNameOfTheContactToBeDeleted", firstName);
-        //            cmd.Parameters.AddWithValue("lastNameOfTheContactToBeDeleted", lastName);
-        //            this.connection.Open();
-        //            cmd.ExecuteNonQuery();
-        //            this.connection.Close();
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new Exception(e.Message);
-        //    }
-        //    finally
-        //    {
-        //        this.connection.Close();
-        //    }
-        //}
+        public void DeleteContact(string firstName, string lastName)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spDeleteContact", this.connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("firstNameOfTheContactToBeDeleted", firstName);
+                    cmd.Parameters.AddWithValue("lastNameOfTheContactToBeDeleted", lastName);
+                    this.connection.Open();
+                    cmd.ExecuteNonQuery();
+                    this.connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
     }
 }
